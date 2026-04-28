@@ -1,8 +1,11 @@
 import React from 'react'
+import LogicPractice from './components/LogicPractice'
 
 function App() {
   return (
-    <div>App</div>
+    <div>
+      <LogicPractice/>
+    </div>
   )
 }
 
