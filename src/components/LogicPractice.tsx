@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import SearchInput from "./SearchInput";
+import { useDebounce } from "../hooks/useDebounce";
 
 type Product = {
   id: number;
@@ -12,6 +14,9 @@ function LogicPractice() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("")
+
+  const searchDebounced = useDebounce(search, 500)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +39,9 @@ function LogicPractice() {
     fetchData();
   }, []);
 
-  const filteredAndSortedProducts = products.filter((p) => p.stock > 0)
+  const filteredAndSortedProducts = products
+    .filter((p)=>p.title.toLowerCase().includes(searchDebounced.toLowerCase()))
+    .filter((p) => p.stock > 0)
         .sort((a, b) => a.price - b.price);
     
     if (loading) {
@@ -49,7 +56,9 @@ function LogicPractice() {
       {filteredAndSortedProducts?.length === 0 ? (
         <p>No product found</p>
       ) : (
-        <ul className="grid grid-cols-4 gap-3">
+          <>
+            <SearchInput value={search} onChange={setSearch} />
+          <ul className="grid grid-cols-4 gap-3">
           {filteredAndSortedProducts?.map((p) => (
             <li key={p.id}>
               <img src={p.images[0]} alt={p.title} className="w-50 h-50 object-contain" />
@@ -57,7 +66,7 @@ function LogicPractice() {
               <p className="text-indigo-800">${p.price}</p>
             </li>
           ))}
-        </ul>
+        </ul></>
       )}
     </div>
   );
