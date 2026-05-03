@@ -111,3 +111,8 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+.dark {
+  background-color: #08060d;
+  color: #fff;
+}

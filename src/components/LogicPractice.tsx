@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import SearchInput from "./SearchInput";
 import { useDebounce } from "../hooks/useDebounce";
-import Pagination from "./pagination";
+import Pagination from "./Pagination";
 
 type Product = {
   id: number;
@@ -67,45 +67,56 @@ function LogicPractice() {
     return <p>Error...{error}</p>;
   }
 
-  return (
-    <div>
-      <SearchInput
-        value={search}
-        onChange={(val) => {
-          setSearch(val);
-          setPage(1); 
-        }}
-      />
+ return (
+  <div className="p-4">
+    <SearchInput
+      value={search}
+      onChange={(val) => {
+        setSearch(val);
+        setPage(1); 
+      }}
+    />
 
-      {loading && <p>Loading...</p>}
 
-      {sortedProducts.length === 0 ? (
-        <p>No product found</p>
-      ) : (
-        <>
-          <ul className="grid grid-cols-4 gap-3">
-            {sortedProducts.map((p) => (
-              <li key={p.id}>
-                <img
-                  src={p.images[0]}
-                  alt={p.title}
-                  className="w-50 h-50 object-contain"
-                />
-                <p>{p.title}</p>
-                <p className="text-indigo-800">${p.price}</p>
-              </li>
-            ))}
-          </ul>
+    {loading ? (
+      <div className="flex justify-center py-20">
+        <p className="text-lg font-semibold animate-pulse text-indigo-600">Loading products...</p>
+      </div>
+    ) : (
+      <>
+        {sortedProducts.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-gray-500">No product found for "{search}"</p>
+          </div>
+        ) : (
+          <>
+            <ul className="grid grid-cols-4 gap-4 mt-6">
+              {sortedProducts.map((p) => (
+                <li key={p.id} className="border p-3 rounded-lg hover:shadow-md transition bg-white">
+                  <img
+                    src={p.images[0]}
+                    alt={p.title}
+                    className="w-full h-48 object-contain mb-2"
+                  />
+                  <h3 className="font-medium truncate">{p.title}</h3>
+                  <p className="text-indigo-700 font-bold mt-1">${p.price}</p>
+                </li>
+              ))}
+            </ul>
 
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={(newPage) => setPage(newPage)}
-          />
-        </>
-      )}
-    </div>
-  );
+            <div className="mt-12">
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onPageChange={(newPage) => setPage(newPage)}
+              />
+            </div>
+          </>
+        )}
+      </>
+    )}
+  </div>
+);
 }
 
 export default LogicPractice;
